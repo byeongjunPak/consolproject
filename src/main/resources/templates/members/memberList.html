@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<link rel="stylesheet" href="/css/memberList.css">
+
+<body>
+<h2 style="display:flex ;justify-content: center"><button onclick="location.href='/'" > 회원목록</button></h2>
+<script>
+
+    function deleteMember(id) {
+      if(confirm("회원을 삭제하시겠습니까?")) {
+        $.ajax({
+          type: "get",
+          url: "/members/delete?id=" + id,
+          success: function (result) {
+            // do something on success
+            alert("회원삭제 성공");
+            location.href="/members"; // reload the page
+
+          },
+          error: function (xhr, status, error) {
+            // do something on error
+            alert("회원삭제 실패" + error);
+          }
+        });
+      }
+  }
+
+
+</script>
+<div class="container">
+<!--  <div th:replace="fragments/bodyHeader :: bodyHeader" />-->
+  <div>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>#</th>
+        <th>이름</th>
+        <th>도시</th>
+        <th>주소</th>
+        <th>우편번호</th>
+        <th>이메일</th>
+        <th>로그인아이디</th>
+        <th>핸드폰번호</th>
+        <th>비밀번호</th>
+        <th>비고</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="member : ${members}">
+        <td th:text="${member.id}"></td>
+        <td th:text="${member.name}"></td>
+        <td th:text="${member.address?.city}"></td>
+        <td th:text="${member.address?.street}"></td>
+        <td th:text="${member.address?.zipcode}"></td>
+        <td th:text="${member.email}"></td>
+        <td th:text="${member.login_id}"></td>
+        <td th:text="${member.phone}"></td>
+        <td th:text="${member.pw}"></td>
+        <td >
+          <button type="button" th:onclick="'deleteMember(\'' + ${member.id} + '\')'"  class="btn btn-primary">삭제</button>
+        </td>
+      </tr>
+
+      </tbody>
+    </table>
+  </div>
+
+<!--  <div th:replace="fragments/footer :: footer" />-->
+
+</div> <!-- /container -->
+
+</body>
+</html>

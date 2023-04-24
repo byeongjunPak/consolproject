@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <div th:replace="fragments/header :: header"/>
+    <link rel="stylesheet" href="/css/cartList.css">
+
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script type="text/javascript" src="/js/address.js" defer></script>
+</head>
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- 왼쪽 사이드 바 시작 -->
+    <!-- th:replace로 templates안에 fragments 폴더안에 side_bar.html 받아오게 함 -->
+    <!-- 수정할 내용은 side_bar.html 에서 해주시면 다 적용됩니다 -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+        <div th:replace="fragments/side_bar :: side_bar"/>
+    </ul>
+    <!-- 왼쪽 사이드 바 끝 -->
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- 상단의 nav 바 시작 -->
+            <!-- 이것도 수정하실거 있으시면 fragments 폭더에 nav_bar 수정해주시면 됩니다 -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <div th:replace="fragments/nav_bar :: nav_bar"/>
+            </nav>
+            <!-- 상단의 nav 바 끝 -->
+
+            <script>
+                $(function () {
+                    $("#btnLoadGames").click(function () {
+                        $.ajax({
+                            url: "https://api.igdb.com/v4/artworks",
+                            type: "POST",
+                            headers: {
+                                "Client-ID": "0dle430ej7oslhsv235qjsf4m49hch",
+                                "Authorization": "Bearer ycztk3e54o45fd8wawjqii57mddf70",
+                                "Accept": "application/json"
+                            },
+                            data: {
+                                "fields": "alpha_channel,animated,checksum,game,height,image_id,url,width;"
+                            },
+                            success: function (response) {
+                                var games = response.data;
+                                for (var i = 0; i < games.length; i++) {
+                                    var game = games[i];
+                                    console.log("Name: " + game.name);
+                                    var cover = game.cover;
+                                    if (cover != null) {
+                                        console.log("Cover URL: " + cover.url);
+                                    } else {
+                                        console.log("No cover image found.");
+                                    }
+                                }
+                            },
+                            error: function (error) {
+                                console.log(error);
+                            }
+                        });
+                    });
+                });
+            </script>
+            <!-- 바디 부분 시작 -->
+            <div class="container-fluid">
+
+                <div class="cart_area">
+                    <p class="cart_title">장바구니</p>
+                    <script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+                    <script th:inline="javascript">
+
+                        function deleteCart(id) {
+                            $(".cart_del").attr("disabled", true);
+                            $.ajax({
+                                url: "/carts/delete",
+                                data: {"id": id},
+                                type: "POST",
+                                success: function () {
+                                    $(".cart_del").attr("disabled", false);
+                                    location.reload();
+                                }
+                            });
+
+
+                        }
+
+
+
+                    </script>
+
+                    <ul class="cart_list">
+                        <li class="cart_index">
+                            <div class="cart_img">이미지</div>
+                            <div class="cart_title">상품이름</div>
+                            <div class="cart_price">가격</div>
+                            <div class="cart_del">삭제</div>
+                        </li>
+                        <li class="cart_items" th:each="cartItem: ${cart.getList()}">
+                            <form onsubmit="return false;"
+                                  style="display: flex; justify-content:space-between; align-items:center; width:100%;">
+                                <div class="cart_img"><img th:src="${cartItem.getItem().getImage()}"></img></div>
+                                <div class="cart_title" th:text="${cartItem.getItem().getName()}"></div>
+                                <div class="cart_price" th:text="${cartItem.getItem().getPrice()}"></div>
+                                <div class="cart_del">
+                                    <button th:onclick="|deleteCart(${cartItem.getId()})|">삭제</button>
+                                </div>
+                            </form>
+                        </li>
+                    </ul>
+                    <div class="total_area">
+                        <p class="total_price">총 금액 : <span th:text="${cart.getTotalPrice()}"></span> 원</p>
+                        <!--                        <button class="buy_btn" th:onclick="|addOrder(${cart.getMember().getId()})|">구매하기</button>-->
+                        <button class="buy_btn" th:onclick="|addOrder(${cart.getMember().getId()})|">구매하기</button>
+                    </div>
+
+
+                    <div class="address_cheek">
+                        <p class="address_title">배송지 확인</p>
+                        <div class="address_area" th:with="member = ${cart.getMember()}">
+                            <script th:inline="javascript">
+                                function addOrder(memberId) {
+                                    let itemName = $('.cart_title').text();
+                                    let itemPrice = $('.total_price').text();
+                                    let name = [[${member.getName()}]];
+                                    let email = [[${member.getEmail()}]];
+                                    let tel = [[${member.getPhone()}]];
+                                    let addr = [[${member.getAddress().getCity}]] + [[${member.getAddress().getStreet}]];
+                                    let postcode = [[${member.getAddress().getZipcode}]];
+                                    IMP.init('imp05754678'); //iamport 대신 자신의 "가맹점 식별코드"를 사용
+                                    IMP.request_pay({
+                                        pg: "kcp.A52CY",
+                                        pay_method: "card",
+                                        merchant_uid: 'merchant_' + new Date().getTime(),
+                                        name: itemName,
+                                        amount: itemPrice,
+                                        buyer_email: email,
+                                        buyer_name: name,
+                                        buyer_tel: tel,
+                                        buyer_addr: addr,
+                                        buyer_postcode: postcode
+                                    }, function (rsp) {
+                                        console.log(rsp);
+                                        if (rsp.success) {
+                                            $(".buy_btn").attr("disabled", true);
+                                            $.ajax({
+                                                url: "/orders/add",
+                                                type: "POST",
+                                                data: {"memberId": memberId},
+                                                success: function () {
+                                                    alert('결제가 완료되었습니다.');
+                                                    $(".buy_btn").attr("disabled", false);
+                                                    location.reload();
+                                                },
+                                                error: function () {
+                                                    alert('ajax error')
+                                                }
+                                            })
+                                        } else {
+                                            var msg = '결제에 실패하였습니다.';
+                                            msg += '에러내용 : ' + rsp.error_msg;
+                                            alert(msg);
+                                        }
+                                    })
+
+                                }
+
+                            </script>
+                            <div class="address_txt01">주소 : <span
+                                    th:text="${member.getAddress().getCity() + member.getAddress().getStreet()}"></span>
+                            </div>
+                            <div class="address_txt02">상세주소 : <span
+                                    th:text="${member.getAddress().getZipcode()}"></span></div>
+                            <button class="change_btn">배송지 변경</button>
+                        </div>
+                    </div>
+                    <script>
+                        function addUpdate(form) {
+                            $.ajax({
+                                url: '/member/address',
+                                type: 'POST',
+                                data: {
+                                    'address': form.address.value,
+                                    'zipcode': form.zipcode.value,
+                                    'street': form.street.value
+                                },
+                                success: function () {
+                                    $('.modal-wrapper').css({
+                                        'display': 'none'
+                                    });
+                                    location.reload();
+                                    console.log('ok')
+                                },
+                                error: function () {
+                                    alert('error')
+                                }
+                            })
+                        }
+                    </script>
+                    <div class="modal-wrapper" style="display: none;">
+                        <form class="address_popup" onsubmit="return false;">
+
+                            <div class="add_pop_txt03">
+                                <button id="city-btn" name="city-btn" readonly onclick="findAddr()">주소찾기</button>
+                                <input id="address" name="address" type="text" class="form-control"
+                                       placeholder="주소를 입력하세요">
+                            </div>
+                            <div class="add_pop_txt04">
+                                <label for="zipcode">우편번호</label>
+                                <input type="text" name="zipcode" id="zipcode" readonly>
+                            </div>
+                            <div class="add_pop_txt05">
+                                <label for="street">상세주소</label>
+                                <input type="text" name="street" id="street">
+                            </div>
+                            <div class="pop_btn_area">
+                                <button class="edit_btn" onclick="addUpdate(form)">수정</button>
+                                <button class="cancel_btn">취소</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+            <!-- 바디 부분 시작 -->
+
+            <script>
+                $(function () {
+                    $('.change_btn').click(function () {
+                        // 모달창 띄우기
+                        $('.modal-wrapper').css({
+                            'display': 'block',
+                            'z-index': '9999'
+                        });
+                    });
+
+                    $('.cancel_btn').click(function () {
+                        // 모달창 닫기
+                        $('.modal-wrapper').css({
+                            'display': 'none'
+                        });
+                    });
+
+                    $('body').on('click', '.edit_btn', function () {
+                        // 수정 버튼 클릭 시 동작할 코드 작성
+                        console.log('수정 버튼 클릭됨');
+                    });
+                });
+
+
+            </script>
+        </div>
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>Copyright &copy; Your Website 2020</span>
+                </div>
+            </div>
+        </footer>
+        <!-- End of Footer -->
+
+    </div>
+
+</div>
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Logout Modal-->
+<div th:replace="fragments/logout :: logout"/>
+
+<!-- Bootstrap core JavaScript-->
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="/js/sb-admin-2.min.js"></script>
+
+</body>
+
+</html>

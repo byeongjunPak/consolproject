@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body th:fragment="side_bar">
+
+<!-- Sidebar - Brand -->
+<a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
+    <!--
+    <div class="sidebar-brand-icon rotate-n-15">
+        <i class="fas fa-laugh-wink"></i>
+    </div>
+    <div class="sidebar-brand-text mx-3">conpang <sup>2</sup></div>
+    -->
+    <img src="/img/coollogo_com-190521488.png" alt="logo" class="logo_img" style="max-width:70%; object-fit:contain;">
+</a>
+
+<!-- Divider -->
+<hr class="sidebar-divider my-0">
+
+<!-- Nav Item - Dashboard -->
+<li class="nav-item active">
+    <a class="nav-link" href="/">
+        <i class="fa-solid fa-house"></i>
+        <span style="font-weight: 300; color: rgba(255,255,255,.8);">메인</span></a>
+</li>
+
+<!-- Divider -->
+<hr class="sidebar-divider">
+
+<!-- Heading -->
+<div class="sidebar-heading">
+    PRODUCTS
+</div>
+
+<!-- Nav Item - Pages Collapse Menu -->
+<li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo"
+       aria-expanded="true" aria-controls="collapseTwo">
+        <i class="fas fa-gamepad"></i>
+        <span>게임기</span>
+    </a>
+    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">category</h6>
+            <a class="collapse-item" href="/item?id=1">PS</a>
+            <a class="collapse-item" href="/item?id=2">XBOX</a>
+            <a class="collapse-item" href="/item?id=3">NINTENDO</a>
+            <a class="collapse-item" href="/item?id=4">VR</a>
+        </div>
+    </div>
+</li>
+
+<!-- Nav Item - Utilities Collapse Menu -->
+<li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities"
+       aria-expanded="true" aria-controls="collapseUtilities">
+        <i class="fas fa-gamepad"></i>
+        <span>악세사리</span>
+    </a>
+    <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+         data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">category</h6>
+            <a class="collapse-item" href="/item?id=8">PS ACC</a>
+            <a class="collapse-item" href="/item?id=9">XBOX ACC</a>
+            <a class="collapse-item" href="/item?id=10">NINTENDO ACC</a>
+            <a class="collapse-item" href="/item?id=11">VR ACC</a>
+        </div>
+    </div>
+</li>
+
+<li class="nav-item">
+    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseGame"
+       aria-expanded="true" aria-controls="collapseUtilities">
+        <i class="fas fa-gamepad"></i>
+        <span>추천게임</span>
+    </a>
+    <div id="collapseGame" class="collapse" aria-labelledby="headingUtilities"
+         data-parent="#accordionSidebar">
+        <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">category</h6>
+            <a class="collapse-item" href="/recomGame?id=48">PS4</a>
+            <a class="collapse-item" href="/recomGame?id=167">PS5</a>
+            <a class="collapse-item" href="/recomGame?id=169">Xbox Series X/S</a>
+            <a class="collapse-item" href="/recomGame?id=130">Nintendo Switch</a>
+            <a class="collapse-item" href="/recomGame?id=49">Oculus VR</a>
+        </div>
+    </div>
+</li>
+
+<!-- Divider -->
+<hr class="sidebar-divider">
+
+<!-- Heading -->
+<div class="sidebar-heading">
+    MENU
+</div>
+
+<!-- Nav Item - Pages Collapse Menu -->
+<li class="nav-item" th:if="${#session != null and #session.getAttribute('id') != 'admin'}">
+    <a class="nav-link" href="/cart">
+        <i class="fas fa-shopping-bag"></i>
+        <span> 장바구니</span></a>
+
+
+</li>
+<li class="nav-item" th:if="${#session != null and #session.getAttribute('id') == 'admin'}">
+    <a class="nav-link" href="/order/list">
+        <i class="fas fa-shopping-bag"></i>
+        <span> 주문목록</span></a>
+
+
+</li>
+
+
+<!-- 공지사항 NAV -->
+<li class="nav-item">
+    <a class="nav-link" href="/notice">
+        <i class="fas fa-bullhorn"></i>
+        <span> 공지사항</span></a>
+</li>
+
+<!-- Nav Item - Tables -->
+<li class="nav-item" th:if="${#session != null and #session.getAttribute('id') != 'admin' and #session.getAttribute('id') != null}">
+    <a class="nav-link" th:href="@{/chat/{roomId}(roomId=${session.id})}">
+        <i class="fa-sharp fa-solid fa-comment"></i>
+        <span> 1:1문의</span></a>
+
+
+</li>
+<li class="nav-item" th:if="${#session != null and #session.getAttribute('id') == 'admin'}">
+    <a class="nav-link" href="/chat/list">
+        <i class="fa-sharp fa-solid fa-comment"></i>
+        <span> 회원문의</span></a>
+
+
+</li>
+<!-- Divider -->
+<hr class="sidebar-divider d-none d-md-block">
+
+<!-- Sidebar Toggler (Sidebar) -->
+<div class="text-center d-none d-md-inline">
+    <button class="rounded-circle border-0" id="sidebarToggle"></button>
+</div>
+
+
+<!-- Divider -->
+<hr class="sidebar-divider d-none d-md-block">
+
+
+</body>
+</html>

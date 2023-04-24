@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--<head th:replace="fragments/header :: header" />-->
+<head>
+<link rel="stylesheet" href="/css/login.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<style>
+    .fieldError {
+        border-color: #bd2130;
+    }
+</style>
+
+<body class="">
+
+    <!--    <div th:replace="fragments/bodyHeader :: bodyHeader"/>-->
+
+        <script>
+            function loginCheck(form) {
+                $(".login-btn").attr("disabled", true);
+                $.ajax({
+                    url: "/member/login",
+                    data: {
+                        "id": form.id.value,
+                        "pw": form.pw.value
+                    },
+                    type: "POST",
+                    success: function (data) {
+                        $(".login-btn").attr("disabled", false);
+                        if (data == 'yes') {
+                            alert("로그인 성공");
+                            location.href = '/';
+                        } else {
+                            alert("아이디 또는 비밀번호가 틀립니다.");
+                        }
+                    },
+                    error: function () {
+                        alert('ajax error');
+                    }
+
+                })
+            }
+
+        </script>
+    <div class="container">
+        <div class="con">
+        <div class="login-title">로그인</div>
+
+    <form>
+
+        <div class="form-group">
+            <label th:for="login_id">로그인 아이디</label>
+            <input type="text"  id = "id" name="id" class="form-control" placeholder="아이디를 입력하세요">
+        </div>
+
+        <div class="form-group">
+            <label th:for="pw">비밀번호</label>
+            <input type="password"  id = "pw" name="pw" class="form-control" placeholder="비밀번호를 입력하세요">
+        </div>
+        <input type="button" onclick="loginCheck(form)" class="btn btn-primary login-btn" value="로그인" />
+    </form>
+    <br/>
+        </div>
+<!--    <div th:replace="fragments/footer :: footer" />-->
+    </div> <!-- /container -->
+
+</body>
+</html>

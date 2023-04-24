@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+
+<!--공통되는 cdn, 타이틀 등 fragments폴더안에 header 안에 넣고 replace 했습니다 -->
+<head>
+    <div th:replace="fragments/header :: header" />
+    <link rel="stylesheet" href="/css/home.css">
+</head>
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- 왼쪽 사이드 바 시작 -->
+    <!-- th:replace로 templates안에 fragments 폴더안에 side_bar.html 받아오게 함 -->
+    <!-- 수정할 내용은 side_bar.html 에서 해주시면 다 적용됩니다 -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <div th:replace="fragments/side_bar :: side_bar"/>
+    </ul>
+
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- 상단의 nav 바 시작 -->
+            <!-- 이것도 수정하실거 있으시면 fragments 폭더에 nav_bar 수정해주시면 됩니다 -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <div th:replace="fragments/nav_bar :: nav_bar" />
+            </nav>
+            <!-- 상단의 nav 바 끝 -->
+
+            <!-- 바디 부분 시작 -->
+            <div class="container-fluid">
+
+                <!-- Page Heading -->
+                <!--<div class="d-sm-flex align-items-center justify-content-between mb-4">
+                    <h1 class="h3 mb-0 text-gray-800">MAIN</h1>
+
+                    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                            class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+                </div>-->
+                <!-- Content Row -->
+                <div class="top">
+
+                    <div class="swiper main_slider">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="/img/xbox series s.jpg" alt="img03">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="/img/xbox series x diablo bundle.jpg" alt="img04">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="/img/xbox series x forza horizon5.jpg" alt="img05">
+                            </div>
+                            <div class="swiper-slide">
+                                <img src="/img/xbox series x.jpg" alt="img06">
+                            </div>
+                        </div>
+                        <div class="swiper-pagination"></div>
+                    </div>
+
+                </div>
+                <!-- 바디 부분 시작 -->
+
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; Your Website 2021</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
+
+        </div>
+        <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Page Wrapper -->
+
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
+
+    <!-- Logout Modal-->
+    <div th:replace="fragments/logout :: logout"/>
+<!-- Bootstrap core JavaScript-->
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="/js/sb-admin-2.min.js"></script>
+
+
+<!-- Page level custom scripts -->
+
+
+<script>
+    var swiper = new Swiper(".main_slider", {
+        observer:true,
+        observeParents:true,
+        slidesPerView: 1,
+        spaceBetween: 30,
+        pagination: {
+            el: ".swiper-pagination",
+        },
+    });
+</script>
+</body>
+
+</html>

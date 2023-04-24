@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--공통되는 cdn, 타이틀 등 fragments폴더안에 header 안에 넣고 replace 했습니다 -->
+<head>
+    <div th:replace="fragments/header :: header"/>
+    <link rel="stylesheet" href="/css/itemadmin.css">
+</head>
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- 왼쪽 사이드 바 시작 -->
+    <!-- th:replace로 templates안에 fragments 폴더안에 side_bar.html 받아오게 함 -->
+    <!-- 수정할 내용은 side_bar.html 에서 해주시면 다 적용됩니다 -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <div th:replace="fragments/side_bar :: side_bar"/>
+    </ul>
+
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column" >
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- 상단의 nav 바 시작 -->
+            <!-- 이것도 수정하실거 있으시면 fragments 폭더에 nav_bar 수정해주시면 됩니다 -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <div th:replace="fragments/nav_bar :: nav_bar"/>
+            </nav>
+            <!-- 상단의 nav 바 끝 -->
+
+            <!-- 바디 부분 시작 -->
+            <script>
+                function itemAdd(form) {
+                    let formData = new FormData();
+                    formData.append("file", $("input[type='file']")[0].files[0]);
+                    formData.append("name", form.name.value);
+                    formData.append("price", form.price.value);
+                    formData.append("stockQuantity", form.stockQuantity.value);
+                    formData.append("itemInfo", form.itemInfo.value);
+                    formData.append("itemVideo", form.itemVideo.value);
+                    formData.append("category_id", form.category.value);
+
+                    startAjax(formData);
+                }
+
+                function startAjax(formData) {
+                    $.ajax({
+                        url: "/admin/item-save",
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            alert('등록 완료');
+                            location.reload();
+                        },
+                        error: function () {
+                            alert("ajax error");
+                        }
+                    })
+                }
+            </script>
+            <div class="container">
+                <div class="con">
+
+                    <form action="">
+                        <div class="login-title">
+                            상품 추가
+                        </div>
+                        <div class="label "><label for="name">이름</label></div>
+                        <input type="text" id="name" name="name" placeholder="">
+                        <div class="label "><label for="price">가격</label></div>
+                        <input type="text" id="price" name="price" placeholder="">
+                        <div class="label "><label for="stockQuantity">수량</label></div>
+                        <input type="text" id="stockQuantity" name="stockQuantity" placeholder="">
+                        <div class="label "><label for="file">업로드</label></div>
+                        <input type="file" id="file" name="file" placeholder="">
+                        <div class="label "><label for="itemInfo">정보</label></div>
+                        <input type="text" id="itemInfo" name="itemInfo" placeholder="">
+                        <div class="label "><label for="itemVideo">유튜브</label></div>
+                        <input type="text" id="itemVideo" name="itemVideo" placeholder="">
+                        <div class="label "><label for="category">카테고리</label></div>
+                        <div class="category">
+                        <select name="category" id="category">
+                            <option th:each="category : ${categoryList}" th:value="${category.id}"
+                                    th:text="${category.name}"></option>
+                        </select>
+                        <input class="itemAddBtn" type="button" onclick="itemAdd(form)" value="등록"/>
+                        </div>
+                    </form>
+                </div>
+
+
+            </div>
+            <!-- 바디 부분 끝 -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <!-- Footer -->
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>Copyright &copy; Your Website 2021</span>
+                </div>
+            </div>
+        </footer>
+        <!-- End of Footer -->
+
+    </div>
+    <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Logout Modal-->
+
+</div>
+<!-- Bootstrap core JavaScript-->
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="/js/sb-admin-2.min.js"></script>
+
+<!-- Page level plugins -->
+
+
+<!-- Page level custom scripts -->
+<script src="/js/demo/chart-area-demo.js"></script>
+<script src="/js/demo/chart-pie-demo.js"></script>
+
+<script>
+    var swiper = new Swiper(".main_slider", {
+        slidesPerView: 1,
+        spaceBetween: 30,
+        pagination: {
+            el: ".swiper-pagination",
+        },
+    });
+</script>
+</body>
+
+</html>

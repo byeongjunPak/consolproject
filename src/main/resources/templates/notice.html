@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <div th:replace="fragments/header :: header" />
+    <link rel="stylesheet" href="/css/notice.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+Knujsl7/1L_dstPt3HV5HzF6Gvk/e3s2R1s1e+c1od3y+u" crossorigin="anonymous">
+</head>
+
+<body id="page-top">
+
+<!-- Page Wrapper -->
+<div id="wrapper">
+
+    <!-- 왼쪽 사이드 바 시작 -->
+    <!-- th:replace로 templates안에 fragments 폴더안에 side_bar.html 받아오게 함 -->
+    <!-- 수정할 내용은 side_bar.html 에서 해주시면 다 적용됩니다 -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+        <div th:replace="fragments/side_bar :: side_bar" />
+    </ul>
+    <!-- 왼쪽 사이드 바 끝 -->
+
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+        <!-- Main Content -->
+        <div id="content">
+
+            <!-- 상단의 nav 바 시작 -->
+            <!-- 이것도 수정하실거 있으시면 fragments 폭더에 nav_bar 수정해주시면 됩니다 -->
+            <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+                <div th:replace="fragments/nav_bar :: nav_bar" />
+            </nav>
+            <!-- 상단의 nav 바 끝 -->
+
+            <!-- 바디 보여주는 부분 시작 -->
+            <div class="container-fluid">
+                <div class="notice_area">
+                    <p class="notice_title">공지사항 <button class="notice_add" th:if="${session.id == 'admin'}" onclick="location.href='/notice/new'">+</button></p>
+                    <!--<a href="/notice/new">글쓰기</a>-->
+                    <div class="accordion" id="noticeAccordion">
+                        <div class="notice_index">
+                            <div class="notice_num">번호</div>
+                            <div class="notice_title">제목</div>
+                            <div class="notice_writer">작성자</div>
+                            <div class="notice_date">날짜</div>
+                        </div>
+                        <div th:each="board,index : ${list}" class="accordion-item">
+                            <div class="accordion-header">
+                                <div class="d-flex justify-content-between align-items-center w-100">
+                                    <button class="accordion-button collapsed d-flex align-items-center" type="button" data-bs-toggle="collapse" th:attr="data-bs-target='#collapse'+${board.getId()}" aria-expanded="false">
+                                        <div class="notice_num" th:text="${index.count}"></div>
+                                        <div class="notice_title" th:text="${board.getTitle()}"></div>
+                                        <div class="notice_writer" th:text="${board.getWriter()}"></div>
+                                        <div class="notice_date" th:text="${#temporals.format(board.getDate(), 'yyyy-MM-dd HH:mm:ss')}"></div>
+                                    </button>
+                                    <div class="d-flex align-items-center">
+                                        <button th:if="${session.id == 'admin'}" type="button" class="btn btn-danger" th:attr="onclick='deleteNotice('+${board.getId()}+')'" style="font-size: 8px;">삭제</button>
+                                    </div>
+                                </div>
+                                <script>
+                                    function deleteNotice(boardId) {
+                                        location.href = '/notice/delete?boardId=' + boardId;
+                                    }
+                                </script>
+                            </div>
+
+                            <div th:id="'collapse' + ${board.getId()}" class="accordion-collapse collapse" data-bs-parent="#noticeAccordion">
+                                <div class="accordion-body">
+                                    <div class="notice_content" th:text="${board.getContent()}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMxmnOQLrjhlzD2rs8U+//E1e9zg5z83P5iZb23z6E5gqXw0yJH/em6jc5" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+            <!--            <script>-->
+<!--                document.querySelectorAll('.accordion .card-header').forEach((header, index) => {-->
+<!--                    header.addEventListener('click', () => {-->
+<!--                        const collapse = header.nextElementSibling;-->
+<!--                        collapse.classList.toggle('show');-->
+<!--                        document.querySelectorAll('.accordion .collapse').forEach((otherCollapse, otherIndex) => {-->
+<!--                            if (otherIndex !== index && otherCollapse.classList.contains('show')) {-->
+<!--                                otherCollapse.classList.remove('show');-->
+<!--                            }-->
+<!--                        });-->
+<!--                    });-->
+<!--                });-->
+<!--            </script>-->
+            <!-- 바디 보여주는 부분 끝 -->
+        </div>
+
+
+
+        <!-- Footer 시작-->
+        <footer class="sticky-footer bg-white">
+            <div class="container my-auto">
+                <div class="copyright text-center my-auto">
+                    <span>Copyright &copy; Your Website 2020</span>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer 끝 -->
+
+    </div>
+
+</div>
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Logout Modal-->
+<div th:replace="fragments/logout :: logout"/>
+
+<!-- Bootstrap core JavaScript-->
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="/js/sb-admin-2.min.js"></script>
+
+</body>
+
+</html>
